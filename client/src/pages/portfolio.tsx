@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowUpRight,
   Download,
@@ -41,6 +42,20 @@ function scrollToId(id: string) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 function SectionHeading(props: {
   eyebrow: string;
   title: string;
@@ -48,7 +63,13 @@ function SectionHeading(props: {
   testIdTitle: string;
 }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
+    <motion.div 
+      variants={fadeIn}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true }}
+      className="mx-auto max-w-2xl text-center"
+    >
       <p
         className="inline-flex items-center gap-2 rounded-full border bg-card/50 px-3 py-1 text-xs font-semibold text-muted-foreground backdrop-blur"
         data-testid={`text-eyebrow-${props.eyebrow.replace(/\s+/g, "-").toLowerCase()}`}
@@ -70,18 +91,19 @@ function SectionHeading(props: {
           {props.description}
         </p>
       ) : null}
-    </div>
+    </motion.div>
   );
 }
 
 function Pill(props: { label: string; testId: string }) {
   return (
-    <span
+    <motion.span
+      variants={fadeIn}
       className="inline-flex items-center rounded-full border bg-card/70 px-3 py-1 text-sm text-foreground/90 shadow-sm"
       data-testid={props.testId}
     >
       {props.label}
-    </span>
+    </motion.span>
   );
 }
 
@@ -91,14 +113,16 @@ function ProjectCard(props: {
 }) {
   const p = props.project;
   return (
-    <button
+    <motion.button
+      variants={fadeIn}
+      whileHover={{ y: -5 }}
       type="button"
       onClick={() => props.onOpen(p)}
       className="group relative w-full text-left"
       data-testid={`button-open-project-${p.id}`}
     >
       <div className="absolute -inset-px rounded-3xl bg-gradient-to-r from-primary/35 via-accent/25 to-transparent opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
-      <Card className="relative overflow-hidden rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:shadow-md">
+      <Card className="relative overflow-hidden rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-all duration-300 group-hover:shadow-md">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p
@@ -148,12 +172,16 @@ function ProjectCard(props: {
           <div className="noise absolute inset-0" />
         </div>
       </Card>
-    </button>
+    </motion.button>
   );
 }
 
 export default function Portfolio() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
 
   const projects = useMemo<Project[]>(
     () => [
@@ -207,17 +235,19 @@ export default function Portfolio() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="absolute left-1/2 top-[-220px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/18 blur-3xl" />
-        <div className="absolute bottom-[-260px] right-[-140px] h-[520px] w-[520px] rounded-full bg-accent/18 blur-3xl" />
-        <div className="noise absolute inset-0 opacity-60" />
+        <div className="absolute inset-0 bg-grid opacity-20" />
+        <div className="absolute left-1/2 top-[-220px] h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-[-260px] right-[-140px] h-[620px] w-[620px] rounded-full bg-accent/10 blur-3xl" />
+        <div className="noise absolute inset-0 opacity-40" />
       </div>
 
       <header className="sticky top-0 z-50 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/55">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <button
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             type="button"
             onClick={() => scrollToId("home")}
             className="group inline-flex items-center gap-2"
@@ -231,23 +261,30 @@ export default function Portfolio() {
             <span className="hidden text-sm font-semibold tracking-tight sm:block" data-testid="text-brand-name">
               Siddharth Rangnani
             </span>
-          </button>
+          </motion.button>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-            {navItems.map((item) => (
-              <button
+            {navItems.map((item, i) => (
+              <motion.button
                 key={item.id}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
                 type="button"
                 onClick={() => scrollToId(item.id)}
-                className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-muted/50"
                 data-testid={`button-nav-${item.id}`}
               >
                 {item.label}
-              </button>
+              </motion.button>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2"
+          >
             <Button
               variant="secondary"
               className="rounded-full"
@@ -257,15 +294,20 @@ export default function Portfolio() {
               <Mail className="mr-2 h-4 w-4" aria-hidden="true" />
               Contact
             </Button>
-          </div>
+          </motion.div>
         </div>
       </header>
 
       <main>
         <section id="home" className="scroll-mt-24" aria-label="Home">
           <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pb-16 sm:pt-16">
-            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-              <div>
+            <div className="flex flex-col-reverse items-center justify-between gap-10 lg:flex-row lg:gap-14">
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+                className="flex-1"
+              >
                 <p
                   className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-3 py-1 text-xs font-semibold text-muted-foreground backdrop-blur"
                   data-testid="text-hero-badge"
@@ -275,33 +317,33 @@ export default function Portfolio() {
                 </p>
 
                 <h1
-                  className="mt-5 font-serif text-4xl tracking-tight sm:text-5xl lg:text-6xl"
+                  className="mt-5 font-serif text-4xl tracking-tight sm:text-5xl lg:text-7xl"
                   data-testid="text-hero-name"
                 >
-                  <span className="text-gradient">Siddharth Rangnani</span>
+                  <span className="text-gradient leading-tight">Siddharth Rangnani</span>
                 </h1>
 
                 <p
-                  className="mt-3 text-lg font-semibold text-foreground/90 sm:text-xl"
+                  className="mt-3 text-xl font-semibold text-foreground/90 sm:text-2xl"
                   data-testid="text-hero-title"
                 >
                   Aspiring PM
                 </p>
 
                 <p
-                  className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+                  className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-lg"
                   data-testid="text-hero-summary"
                 >
                   I build product thinking into clear, structured experiences — from problem framing and research to wireframes,
                   metrics, and iteration.
                 </p>
 
-                <div className="mt-7 flex flex-wrap items-center gap-3">
+                <div className="mt-8 flex flex-wrap items-center gap-4">
                   <a
                     href="https://github.com/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-4 py-2 text-sm font-semibold shadow-sm transition hover:bg-card"
+                    className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-card hover:scale-105"
                     data-testid="link-github"
                   >
                     <Github className="h-4 w-4" aria-hidden="true" />
@@ -311,45 +353,53 @@ export default function Portfolio() {
                     href="https://linkedin.com/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-4 py-2 text-sm font-semibold shadow-sm transition hover:bg-card"
+                    className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-card hover:scale-105"
                     data-testid="link-linkedin"
                   >
                     <Linkedin className="h-4 w-4" aria-hidden="true" />
                     LinkedIn
                   </a>
 
-                  <Button className="rounded-full" data-testid="button-download-cv">
-                    <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <Button className="rounded-full px-6 py-5 h-auto text-base" data-testid="button-download-cv">
+                    <Download className="mr-2 h-5 w-5" aria-hidden="true" />
                     Download/view CV
                   </Button>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="relative">
-                <div className="absolute -inset-2 rounded-[2.25rem] bg-gradient-to-r from-primary/25 via-accent/20 to-transparent blur-xl" />
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="relative w-full max-w-md lg:w-[450px]"
+              >
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-primary/30 via-accent/20 to-transparent blur-2xl" />
                 <div
-                  className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.25rem] border bg-card/60 shadow-sm backdrop-blur"
+                  className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] border border-white/10 bg-card/40 shadow-2xl backdrop-blur-md"
                   data-testid="img-profile-placeholder"
                 >
                   <div className="absolute inset-0 grid place-items-center p-8">
                     <div className="text-center">
-                      <p className="text-sm font-semibold" data-testid="text-photo-placeholder-title">
-                        Your photo goes here
+                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/20">
+                        <Sparkles className="h-8 w-8 text-primary/60" />
+                      </div>
+                      <p className="text-base font-semibold" data-testid="text-photo-placeholder-title">
+                        Siddharth's Photo
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground" data-testid="text-photo-placeholder-subtitle">
-                        Replace this placeholder with your image later.
+                      <p className="mt-2 text-sm text-muted-foreground" data-testid="text-photo-placeholder-subtitle">
+                        Drop your professional headshot here to complete the look.
                       </p>
                     </div>
                   </div>
-                  <div className="noise absolute inset-0 opacity-40" />
+                  <div className="noise absolute inset-0 opacity-30" />
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
         <section id="experience" className="scroll-mt-24" aria-label="Experience">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <SectionHeading
               eyebrow="Experience"
               title="Where I’ve worked"
@@ -357,47 +407,58 @@ export default function Portfolio() {
               testIdTitle="text-section-experience"
             />
 
-            <div className="mx-auto mt-10 grid max-w-3xl gap-4" data-testid="list-experience">
-              <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur" data-testid="card-experience-crest">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold" data-testid="text-company-crest">
-                      Crest Data
-                    </p>
-                    <p className="text-sm text-muted-foreground" data-testid="text-role-crest">
-                      Experience
+            <motion.div 
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="mx-auto mt-12 grid max-w-3xl gap-6" 
+              data-testid="list-experience"
+            >
+              <motion.div variants={fadeIn}>
+                <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur hover:bg-card/80 transition-colors" data-testid="card-experience-crest">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-lg font-bold" data-testid="text-company-crest">
+                        Crest Data
+                      </p>
+                      <p className="text-sm font-medium text-primary" data-testid="text-role-crest">
+                        Project Experience
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-date-crest">
+                      Nov 2023 – Dec 2025
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-muted-foreground" data-testid="text-date-crest">
-                    Nov 2023 – Dec 2025
-                  </p>
-                </div>
-              </Card>
+                </Card>
+              </motion.div>
 
-              <Card
-                className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur"
-                data-testid="card-experience-cactus"
-              >
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold" data-testid="text-company-cactus">
-                      Cactus Communications
-                    </p>
-                    <p className="text-sm text-muted-foreground" data-testid="text-role-cactus">
-                      Internship
+              <motion.div variants={fadeIn}>
+                <Card
+                  className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur hover:bg-card/80 transition-colors"
+                  data-testid="card-experience-cactus"
+                >
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-lg font-bold" data-testid="text-company-cactus">
+                        Cactus Communications
+                      </p>
+                      <p className="text-sm font-medium text-primary" data-testid="text-role-cactus">
+                        Product Intern
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-date-cactus">
+                      June 2023 – August 2023
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-muted-foreground" data-testid="text-date-cactus">
-                    June 2023 – August 2023
-                  </p>
-                </div>
-              </Card>
-            </div>
+                </Card>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
         <section id="projects" className="scroll-mt-24" aria-label="Projects">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <SectionHeading
               eyebrow="Projects"
               title="Selected work"
@@ -405,81 +466,98 @@ export default function Portfolio() {
               testIdTitle="text-section-projects"
             />
 
-            <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="grid-projects">
+            <motion.div 
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3" 
+              data-testid="grid-projects"
+            >
               {projects.map((p) => (
                 <ProjectCard key={p.id} project={p} onOpen={setActiveProject} />
               ))}
-            </div>
+            </motion.div>
 
-            <Dialog open={!!activeProject} onOpenChange={(open) => (!open ? setActiveProject(null) : null)}>
-              <DialogContent className="max-w-2xl rounded-3xl" data-testid="modal-project">
-                {activeProject ? (
-                  <>
-                    <DialogHeader>
-                      <DialogTitle data-testid="text-modal-project-title">{activeProject.title}</DialogTitle>
-                    </DialogHeader>
+            <AnimatePresence>
+              {activeProject && (
+                <Dialog open={!!activeProject} onOpenChange={(open) => (!open ? setActiveProject(null) : null)}>
+                  <DialogContent className="max-w-2xl rounded-[2rem] p-0 overflow-hidden bg-card/95 backdrop-blur-xl border-white/10" data-testid="modal-project">
+                    <div className="relative p-8 pt-10">
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-serif" data-testid="text-modal-project-title">{activeProject.title}</DialogTitle>
+                      </DialogHeader>
 
-                    <div className="mt-2 space-y-4">
-                      <p className="text-sm text-muted-foreground" data-testid="text-modal-project-summary">
-                        {activeProject.summary}
-                      </p>
-
-                      <div className="flex flex-wrap gap-2" data-testid="list-modal-project-tags">
-                        {activeProject.tags.map((t) => (
-                          <Badge
-                            key={t}
-                            variant="secondary"
-                            className="rounded-full"
-                            data-testid={`badge-modal-tag-${t.replace(/\s+/g, "-").toLowerCase()}`}
-                          >
-                            {t}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="rounded-2xl border bg-card/60 p-4" data-testid="panel-modal-project-details">
-                        <p className="text-sm font-semibold" data-testid="text-modal-details-heading">
-                          Details
+                      <div className="mt-6 space-y-6">
+                        <p className="text-base text-muted-foreground leading-relaxed" data-testid="text-modal-project-summary">
+                          {activeProject.summary}
                         </p>
-                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground" data-testid="list-modal-details">
-                          {activeProject.details.map((d, idx) => (
-                            <li key={idx} data-testid={`text-modal-detail-${idx}`}>
-                              {d}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
 
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <a
-                          href={activeProject.linkHref}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-full border bg-background px-4 py-2 text-sm font-semibold shadow-sm transition hover:bg-card"
-                          data-testid="link-project-external"
-                        >
-                          {activeProject.linkLabel}
-                          <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                        </a>
-                        <Button
-                          variant="secondary"
-                          className="rounded-full"
-                          onClick={() => setActiveProject(null)}
-                          data-testid="button-close-project"
-                        >
-                          Close
-                        </Button>
+                        <div className="flex flex-wrap gap-2" data-testid="list-modal-project-tags">
+                          {activeProject.tags.map((t) => (
+                            <Badge
+                              key={t}
+                              variant="secondary"
+                              className="rounded-full px-3 py-1"
+                              data-testid={`badge-modal-tag-${t.replace(/\s+/g, "-").toLowerCase()}`}
+                            >
+                              {t}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <div className="rounded-3xl border border-white/5 bg-white/5 p-6" data-testid="panel-modal-project-details">
+                          <p className="text-sm font-bold uppercase tracking-wider text-primary" data-testid="text-modal-details-heading">
+                            Key Details
+                          </p>
+                          <ul className="mt-4 space-y-3" data-testid="list-modal-details">
+                            {activeProject.details.map((d, idx) => (
+                              <li key={idx} className="flex gap-3 text-sm text-muted-foreground" data-testid={`text-modal-detail-${idx}`}>
+                                <Sparkles className="h-4 w-4 shrink-0 text-primary/60" />
+                                {d}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                          <Button
+                            asChild
+                            size="lg"
+                            className="rounded-full px-8"
+                            data-testid="link-project-external"
+                          >
+                            <a
+                              href={activeProject.linkHref}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {activeProject.linkLabel}
+                              <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                            </a>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="lg"
+                            className="rounded-full border-white/10"
+                            onClick={() => setActiveProject(null)}
+                            data-testid="button-close-project"
+                          >
+                            Close
+                          </Button>
+                        </div>
                       </div>
+                      <div className="noise absolute inset-0 opacity-20 pointer-events-none" />
                     </div>
-                  </>
-                ) : null}
-              </DialogContent>
-            </Dialog>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </AnimatePresence>
           </div>
         </section>
 
         <section id="tech" className="scroll-mt-24" aria-label="Tech Stack">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <SectionHeading
               eyebrow="Tech stack"
               title="Tools & skills"
@@ -487,34 +565,38 @@ export default function Portfolio() {
               testIdTitle="text-section-tech"
             />
 
-            <div className="mx-auto mt-10 max-w-4xl" data-testid="list-tech">
-              <div className="rounded-3xl border bg-card/60 p-6 shadow-sm backdrop-blur">
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    "Product Management",
-                    "Product Sense",
-                    "Product improvement",
-                    "Wireframing",
-                    "Google Analytics",
-                    "ReactJS",
-                    "JavaScript",
-                    "NodeJS",
-                    "Python",
-                    "FASTAPI",
-                    "MongoDB",
-                    "Docker",
-                    "Kubernetes",
-                  ].map((t, i) => (
-                    <Pill key={t} label={t} testId={`pill-tech-${i}`} />
-                  ))}
-                </div>
-              </div>
+            <div className="mx-auto mt-12 max-w-4xl" data-testid="list-tech">
+              <motion.div 
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                className="flex flex-wrap justify-center gap-3"
+              >
+                {[
+                  "Product Management",
+                  "Product Sense",
+                  "Product improvement",
+                  "Wireframing",
+                  "Google Analytics",
+                  "ReactJS",
+                  "JavaScript",
+                  "NodeJS",
+                  "Python",
+                  "FASTAPI",
+                  "MongoDB",
+                  "Docker",
+                  "Kubernetes",
+                ].map((t, i) => (
+                  <Pill key={t} label={t} testId={`pill-tech-${i}`} />
+                ))}
+              </motion.div>
             </div>
           </div>
         </section>
 
         <section id="education" className="scroll-mt-24" aria-label="Education">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <SectionHeading
               eyebrow="Education"
               title="Academic background"
@@ -522,44 +604,55 @@ export default function Portfolio() {
               testIdTitle="text-section-education"
             />
 
-            <div className="mx-auto mt-10 grid max-w-3xl gap-4" data-testid="list-education">
-              <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur" data-testid="card-edu-nirma">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold" data-testid="text-edu-school-nirma">
-                      Nirma University, Ahmedabad
-                    </p>
-                    <p className="text-sm text-muted-foreground" data-testid="text-edu-degree-nirma">
-                      BTech in Computer Science
+            <motion.div 
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="mx-auto mt-12 grid max-w-3xl gap-6" 
+              data-testid="list-education"
+            >
+              <motion.div variants={fadeIn}>
+                <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur" data-testid="card-edu-nirma">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-lg font-bold" data-testid="text-edu-school-nirma">
+                        Nirma University, Ahmedabad
+                      </p>
+                      <p className="text-sm font-medium text-primary" data-testid="text-edu-degree-nirma">
+                        BTech in Computer Science
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-edu-date-nirma">
+                      2021 – 2024
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-muted-foreground" data-testid="text-edu-date-nirma">
-                    2021 – 2024
-                  </p>
-                </div>
-              </Card>
+                </Card>
+              </motion.div>
 
-              <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur" data-testid="card-edu-gtu">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold" data-testid="text-edu-school-gtu">
-                      Gujarat Technological University
-                    </p>
-                    <p className="text-sm text-muted-foreground" data-testid="text-edu-degree-gtu">
-                      Diploma in Computer Science
+              <motion.div variants={fadeIn}>
+                <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur" data-testid="card-edu-gtu">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-lg font-bold" data-testid="text-edu-school-gtu">
+                        Gujarat Technological University
+                      </p>
+                      <p className="text-sm font-medium text-primary" data-testid="text-edu-degree-gtu">
+                        Diploma in Computer Science
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-edu-date-gtu">
+                      2018 – 2021
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-muted-foreground" data-testid="text-edu-date-gtu">
-                    2018 – 2021
-                  </p>
-                </div>
-              </Card>
-            </div>
+                </Card>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
         <section id="contact" className="scroll-mt-24" aria-label="Contact">
-          <div className="mx-auto max-w-6xl px-4 pb-20 pt-14 sm:px-6 sm:pb-24 sm:pt-18">
+          <div className="mx-auto max-w-6xl px-4 pb-24 pt-16 sm:px-6 sm:pb-32 sm:pt-20">
             <SectionHeading
               eyebrow="Contact"
               title="Contact me"
@@ -567,104 +660,128 @@ export default function Portfolio() {
               testIdTitle="text-section-contact"
             />
 
-            <div className="mx-auto mt-10 grid max-w-5xl gap-6 lg:grid-cols-2" data-testid="grid-contact">
-              <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur" data-testid="card-contact-info">
-                <p className="text-sm font-semibold" data-testid="text-contact-heading">
-                  Let’s talk
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground" data-testid="text-contact-copy">
-                  If you’re hiring for Product roles or want to collaborate, feel free to reach out.
-                </p>
+            <div className="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2" data-testid="grid-contact">
+              <motion.div 
+                variants={fadeIn}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur h-full" data-testid="card-contact-info">
+                  <p className="text-xl font-bold" data-testid="text-contact-heading">
+                    Let’s talk
+                  </p>
+                  <p className="mt-4 text-base leading-relaxed text-muted-foreground" data-testid="text-contact-copy">
+                    If you’re hiring for Product roles or want to collaborate, feel free to reach out. I'm always open to discussing new opportunities and interesting projects.
+                  </p>
 
-                <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-3" data-testid="row-contact-email">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border bg-background/60">
-                      <Mail className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground" data-testid="text-contact-email-label">
+                  <div className="mt-8 space-y-6">
+                    <div className="flex items-center gap-4" data-testid="row-contact-email">
+                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border bg-primary/10 text-primary">
+                        <Mail className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground" data-testid="text-contact-email-label">
+                          Email
+                        </p>
+                        <p className="text-base font-semibold" data-testid="text-contact-email-value">
+                          your.email@example.com
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4" data-testid="row-contact-social">
+                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border bg-accent/10 text-accent">
+                        <Linkedin className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground" data-testid="text-contact-social-label">
+                          Social
+                        </p>
+                        <p className="text-base font-semibold" data-testid="text-contact-social-value">
+                          GitHub • LinkedIn
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div 
+                variants={fadeIn}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur" data-testid="card-contact-form">
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="space-y-6"
+                    data-testid="form-contact"
+                  >
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold" htmlFor="contact-name" data-testid="label-name">
+                        Name
+                      </label>
+                      <Input
+                        id="contact-name"
+                        placeholder="Your name"
+                        className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
+                        data-testid="input-name"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold" htmlFor="contact-email" data-testid="label-email">
                         Email
-                      </p>
-                      <p className="text-sm font-semibold" data-testid="text-contact-email-value">
-                        your.email@example.com
-                      </p>
+                      </label>
+                      <Input
+                        id="contact-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
+                        data-testid="input-email"
+                      />
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-3" data-testid="row-contact-social">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border bg-background/60">
-                      <Github className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                    <div>
-                      <p className="text-xs font-semibold text-muted-foreground" data-testid="text-contact-social-label">
-                        Social
-                      </p>
-                      <p className="text-sm font-semibold" data-testid="text-contact-social-value">
-                        GitHub • LinkedIn
-                      </p>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold" htmlFor="contact-message" data-testid="label-message">
+                        Message
+                      </label>
+                      <Textarea
+                        id="contact-message"
+                        placeholder="Write your message..."
+                        className="min-h-[160px] rounded-2xl border-white/10 bg-muted/30 focus:bg-muted/50 resize-none"
+                        data-testid="input-message"
+                      />
                     </div>
-                  </div>
-                </div>
-              </Card>
 
-              <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur" data-testid="card-contact-form">
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="space-y-4"
-                  data-testid="form-contact"
-                >
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold" htmlFor="contact-name" data-testid="label-name">
-                      Name
-                    </label>
-                    <Input
-                      id="contact-name"
-                      placeholder="Your name"
-                      className="rounded-2xl"
-                      data-testid="input-name"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold" htmlFor="contact-email" data-testid="label-email">
-                      Email
-                    </label>
-                    <Input
-                      id="contact-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      className="rounded-2xl"
-                      data-testid="input-email"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold" htmlFor="contact-message" data-testid="label-message">
-                      Message
-                    </label>
-                    <Textarea
-                      id="contact-message"
-                      placeholder="Write your message..."
-                      className="min-h-[140px] rounded-2xl"
-                      data-testid="input-message"
-                    />
-                  </div>
-
-                  <Button type="submit" className="w-full rounded-2xl" data-testid="button-submit">
-                    Send message
-                  </Button>
-                </form>
-              </Card>
+                    <Button type="submit" className="w-full rounded-2xl h-14 text-base font-bold shadow-lg shadow-primary/20" data-testid="button-submit">
+                      Send message
+                    </Button>
+                  </form>
+                </Card>
+              </motion.div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t bg-background/60">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <p className="text-sm text-muted-foreground" data-testid="text-footer">
-            © {new Date().getFullYear()} Siddharth Rangnani. Built with React.
-          </p>
+      <footer className="border-t bg-background/60 py-12">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border bg-card/70 shadow-sm">
+                <span className="font-serif text-base" aria-hidden="true">
+                  S
+                </span>
+              </span>
+              <span className="text-sm font-bold tracking-tight">Siddharth Rangnani</span>
+            </div>
+            <p className="text-sm text-muted-foreground" data-testid="text-footer">
+              © {new Date().getFullYear()} Siddharth Rangnani. Built with React & Framer Motion.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
