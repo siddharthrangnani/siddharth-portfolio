@@ -33,7 +33,6 @@ const navItems = [
   { id: "projects", label: "Projects" },
   { id: "tech", label: "Tech Stack" },
   { id: "education", label: "Education" },
-  { id: "contact", label: "Contact me" },
 ] as const;
 
 function scrollToId(id: string) {
@@ -118,11 +117,11 @@ function ProjectCard(props: {
       whileHover={{ y: -5 }}
       type="button"
       onClick={() => props.onOpen(p)}
-      className="group relative w-full text-left"
+      className="group relative w-full h-full text-left flex flex-col"
       data-testid={`button-open-project-${p.id}`}
     >
       <div className="absolute -inset-px rounded-3xl bg-gradient-to-r from-primary/35 via-accent/25 to-transparent opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
-      <Card className="relative overflow-hidden rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-all duration-300 group-hover:shadow-md">
+      <Card className="relative flex-1 flex flex-col overflow-hidden rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-all duration-300 group-hover:shadow-md">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p
@@ -139,7 +138,7 @@ function ProjectCard(props: {
             </h3>
           </div>
           <span
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background/60 shadow-sm"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border bg-background/60 shadow-sm shrink-0"
             aria-hidden="true"
             data-testid={`icon-project-arrow-${p.id}`}
           >
@@ -148,13 +147,13 @@ function ProjectCard(props: {
         </div>
 
         <p
-          className="mt-3 text-sm leading-relaxed text-muted-foreground"
+          className="mt-3 text-sm leading-relaxed text-muted-foreground line-clamp-3"
           data-testid={`text-project-summary-${p.id}`}
         >
           {p.summary}
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2" data-testid={`list-project-tags-${p.id}`}>
+        <div className="mt-auto pt-4 flex flex-wrap gap-2" data-testid={`list-project-tags-${p.id}`}>
           {p.tags.map((t) => (
             <Badge
               key={t}
