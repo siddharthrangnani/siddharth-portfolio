@@ -6,6 +6,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   ArrowUpRight,
   Download,
@@ -14,7 +26,16 @@ import {
   Mail,
   MapPin,
   Sparkles,
+  CheckCircle2,
 } from "lucide-react";
+
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 type Project = {
   id: string;
@@ -178,6 +199,28 @@ function ProjectCard(props: {
 
 export default function Portfolio() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const { toast } = useToast();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+  });
+
+  function onSubmit(values: ContactFormValues) {
+    console.log("Form submitted:", values);
+    setIsSubmitted(true);
+    toast({
+      title: "Success!",
+      description: "Message sent successfully",
+    });
+    form.reset();
+    setTimeout(() => setIsSubmitted(false), 5000);
+  }
 
   useEffect(() => {
     document.documentElement.classList.add('dark');
@@ -756,52 +799,108 @@ export default function Portfolio() {
                 viewport={{ once: true }}
               >
                 <Card className="rounded-3xl border bg-card/70 p-8 shadow-sm backdrop-blur" data-testid="card-contact-form">
-                  <form
-                    onSubmit={(e) => e.preventDefault()}
-                    className="space-y-6"
-                    data-testid="form-contact"
-                  >
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold" htmlFor="contact-name" data-testid="label-name">
-                        Name
-                      </label>
-                      <Input
-                        id="contact-name"
-                        placeholder="Your name"
-                        className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
-                        data-testid="input-name"
-                      />
-                    </div>
+                  <AnimatePresence mode="wait">
+                    {isSubmitted ? (
+                      <motion.div
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="flex flex-col items-center justify-center py-12 text-center"
+                        data-testid="status-success"
+                      >
+                        <div className="mb-4 rounded-full bg-primary/10 p-3 text-primary">
+                          <CheckCircle2 className="h-12 w-12" />
+                        </div>
+                        <h3 className="text-xl font-bold">Message sent successfully</h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          Thank you for reaching out. I'll get back to you shortly!
+                        </p>
+                        <Button
+                          variant="ghost"
+                          className="mt-6"
+                          onClick={() => setIsSubmitted(false)}
+                        >
+                          Send another message
+                        </Button>
+                      </motion.div>
+                    ) : (
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="space-y-6"
+                          data-testid="form-contact"
+                        >
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-bold">Name</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Your name"
+                                    className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
+                                    data-testid="input-name"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold" htmlFor="contact-email" data-testid="label-email">
-                        Email
-                      </label>
-                      <Input
-                        id="contact-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
-                        data-testid="input-email"
-                      />
-                    </div>
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-bold">Email</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="email"
+                                    placeholder="your@email.com"
+                                    className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
+                                    data-testid="input-email"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold" htmlFor="contact-message" data-testid="label-message">
-                        Message
-                      </label>
-                      <Textarea
-                        id="contact-message"
-                        placeholder="Write your message..."
-                        className="min-h-[160px] rounded-2xl border-white/10 bg-muted/30 focus:bg-muted/50 resize-none"
-                        data-testid="input-message"
-                      />
-                    </div>
+                          <FormField
+                            control={form.control}
+                            name="message"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-bold">Message</FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Write your message..."
+                                    className="min-h-[160px] rounded-2xl border-white/10 bg-muted/30 focus:bg-muted/50 resize-none"
+                                    data-testid="input-message"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                    <Button type="submit" className="w-full rounded-2xl h-14 text-base font-bold shadow-lg shadow-primary/20" data-testid="button-submit">
-                      Send message
-                    </Button>
-                  </form>
+                          <Button 
+                            type="submit" 
+                            disabled={form.formState.isSubmitting}
+                            className="w-full rounded-2xl h-14 text-base font-bold shadow-lg shadow-primary/20" 
+                            data-testid="button-submit"
+                          >
+                            {form.formState.isSubmitting ? "Sending..." : "Send message"}
+                          </Button>
+                        </form>
+                      </Form>
+                    )}
+                  </AnimatePresence>
                 </Card>
               </motion.div>
             </div>
