@@ -344,9 +344,37 @@ export default function Portfolio() {
       <main>
         <section id="home" className="scroll-mt-24" aria-label="Home">
           <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pb-16 sm:pt-16">
-            <div className="flex flex-col-reverse items-center justify-between gap-10 lg:flex-row lg:gap-14">
+            <div className="flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-14">
               <motion.div 
                 initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="relative w-full max-md:max-w-md lg:w-[450px]"
+              >
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-primary/30 via-accent/20 to-transparent blur-2xl" />
+                <div
+                  className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] border border-white/10 bg-card/40 shadow-2xl backdrop-blur-md"
+                  data-testid="img-profile-placeholder"
+                >
+                  <div className="absolute inset-0 grid place-items-center p-8">
+                    <div className="text-center">
+                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/20">
+                        <Sparkles className="h-8 w-8 text-primary/60" />
+                      </div>
+                      <p className="text-base font-semibold" data-testid="text-photo-placeholder-title">
+                        Siddharth's Photo
+                      </p>
+                      <p className="mt-2 text-sm text-muted-foreground" data-testid="text-photo-placeholder-subtitle">
+                        Drop your professional headshot here to complete the look.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="noise absolute inset-0 opacity-30" />
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
                 className="flex-1"
@@ -407,34 +435,6 @@ export default function Portfolio() {
                     <Download className="mr-2 h-5 w-5" aria-hidden="true" />
                     Download/view CV
                   </Button>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative w-full max-w-md lg:w-[450px]"
-              >
-                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-primary/30 via-accent/20 to-transparent blur-2xl" />
-                <div
-                  className="relative aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] border border-white/10 bg-card/40 shadow-2xl backdrop-blur-md"
-                  data-testid="img-profile-placeholder"
-                >
-                  <div className="absolute inset-0 grid place-items-center p-8">
-                    <div className="text-center">
-                      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/20">
-                        <Sparkles className="h-8 w-8 text-primary/60" />
-                      </div>
-                      <p className="text-base font-semibold" data-testid="text-photo-placeholder-title">
-                        Siddharth's Photo
-                      </p>
-                      <p className="mt-2 text-sm text-muted-foreground" data-testid="text-photo-placeholder-subtitle">
-                        Drop your professional headshot here to complete the look.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="noise absolute inset-0 opacity-30" />
                 </div>
               </motion.div>
             </div>
