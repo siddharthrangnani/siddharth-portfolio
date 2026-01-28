@@ -32,6 +32,7 @@ const navItems = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "tech", label: "Skills" },
+  { id: "certifications", label: "Certifications" },
   { id: "education", label: "Education" },
 ] as const;
 
@@ -591,6 +592,48 @@ export default function Portfolio() {
                 ))}
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        <section id="certifications" className="scroll-mt-24" aria-label="Certifications">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+            <SectionHeading
+              eyebrow="Credentials"
+              title="Certifications"
+              description="Professional certifications and learning milestones."
+              testIdTitle="text-section-certifications"
+            />
+
+            <motion.div 
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="mx-auto mt-12 grid max-w-3xl gap-6"
+              data-testid="list-certifications"
+            >
+              {[
+                { title: "Product Management Professional (PMP)", issuer: "Institute of Product", link: "https://example.com" },
+                { title: "Advanced Google Analytics", issuer: "Google", link: "https://example.com" },
+                { title: "Certified Product Manager", issuer: "AIPMM", link: "https://example.com" },
+              ].map((cert, i) => (
+                <motion.div key={i} variants={fadeIn}>
+                  <a href={cert.link} target="_blank" rel="noreferrer" className="block group">
+                    <Card className="rounded-3xl border bg-card/70 p-6 shadow-sm backdrop-blur transition-all duration-300 group-hover:bg-card/90 group-hover:border-primary/30">
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <p className="text-lg font-bold group-hover:text-primary transition-colors">{cert.title}</p>
+                          <p className="text-sm text-muted-foreground">{cert.issuer}</p>
+                        </div>
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border bg-background/60 shadow-sm transition-transform group-hover:rotate-12">
+                          <ArrowUpRight className="h-5 w-5" />
+                        </span>
+                      </div>
+                    </Card>
+                  </a>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </section>
 
