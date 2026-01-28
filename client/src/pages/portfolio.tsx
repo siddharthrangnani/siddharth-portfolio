@@ -31,7 +31,7 @@ const navItems = [
   { id: "home", label: "Home" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
-  { id: "tech", label: "Tech Stack" },
+  { id: "tech", label: "Skills" },
   { id: "education", label: "Education" },
 ] as const;
 
@@ -555,10 +555,10 @@ export default function Portfolio() {
           </div>
         </section>
 
-        <section id="tech" className="scroll-mt-24" aria-label="Tech Stack">
+        <section id="tech" className="scroll-mt-24" aria-label="Skills">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <SectionHeading
-              eyebrow="Tech stack"
+              eyebrow="Skills"
               title="Tools & skills"
               description="A mix of product fundamentals and hands-on engineering." 
               testIdTitle="text-section-tech"
