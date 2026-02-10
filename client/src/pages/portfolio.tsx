@@ -212,7 +212,6 @@ export default function Portfolio() {
   });
 
   function onSubmit(values: ContactFormValues) {
-    console.log("Form submitted:", values);
     setIsSubmitted(true);
     toast({
       title: "Success!",
@@ -229,50 +228,73 @@ export default function Portfolio() {
   const projects = useMemo<Project[]>(
     () => [
       {
-        id: "pm-dashboard",
-        title: "Product Metrics Dashboard",
-        subtitle: "Demo project",
+        id: "udemy-case-study",
+        title: "Udemy Case Study",
+        subtitle: "Product Management",
         summary:
-          "A clean dashboard concept for KPI tracking with smart grouping, filters, and weekly trends.",
-        tags: ["Product", "Analytics", "UI"],
+          "Suggested some ideas to improve user engagement and course completion rates on Udemy platform.",
+        tags: ["Product", "Case Study", "Improvement","Discovery"],
         details: [
-          "Defined KPI hierarchy (North Star → inputs → diagnostic metrics).",
-          "Designed weekly review flow and lightweight annotations for insights.",
-          "Built responsive cards and modal deep-dive layout.",
+          "Defined Problem discovery and metrics",
+          "Designed a solution to improve user engagement and course completion rate.",
+          "Suggested UI/UX improvements .",
+          "Defined RICE framework for prioritization of features.",
         ],
-        linkLabel: "View prototype link",
-        linkHref: "https://example.com",
+        linkLabel: "View Slide Deck",
+        linkHref: "https://drive.google.com/file/d/1G-AfbbCgeuQuxqpv6-1aVQDdO9UlAaeD/view?usp=sharing",
       },
       {
-        id: "wireframe-kit",
-        title: "Wireframing Kit",
-        subtitle: "Demo project",
+        id: "jiomart-improvement",
+        title: "Jiomart teardown & Improvement",
+        subtitle: "Product Management",
         summary:
-          "A reusable set of components and layouts for fast iteration on product flows and onboarding.",
-        tags: ["Wireframing", "UX", "Components"],
+          "A teardown and improvement of Jiomart's App.",
+        tags: ["Wireframing", "UX", "Components","Teardown","Improvement"],
         details: [
-          "Created modular templates for onboarding, settings, and empty states.",
-          "Focused on consistent spacing + typography scale.",
-          "Added interaction states to feel real (hover, focus, transitions).",
+          "Conducted a detailed teardown of Jiomart's app to identify pain points.",
+          "Suggested wireframe improvements to enhance user experience.",
+          "Suggested few features to improve app like multilanguage support, voice search etc.",
         ],
         linkLabel: "Open case study",
-        linkHref: "https://example.com",
+        linkHref: "https://pitch.com/v/jiomart-teardown-and-improvement-bpwtmv/fe1e71c1-3d7c-4bea-aeef-e01cec4fdfc8",
       },
       {
-        id: "feedback-loop",
-        title: "Customer Feedback Loop",
-        subtitle: "Demo project",
+  "id": "promptcue-improvement",
+  "title": "Promptcue Improvement",
+  "subtitle": "Product & UX Review",
+  "summary": "A detailed review of the Promptcue platform, including suggested user experience (UX) and user interface (UI) improvements, and proposals for key new features like LLM comparison and custom model support.",
+  "tags": [
+    "UX Improvement",
+    "Onboarding",
+    "Product Features",
+    "LLM"
+  ],
+  "details": [
+    "Streamline onboarding by allowing 2-3 free prompts before requiring an API key.",
+    "Improve model selection UI with grouping, nested dropdowns, and a search bar.",
+    "Declutter the prompt input bar by moving less-used features to the sidebar.",
+    "Propose LLM Comparison feature for side-by-side response testing.",
+    "Propose enabling support for connecting custom in-house LLM models via an API endpoint."
+  ],
+  "linkLabel": "See Document",
+  "linkHref": "https://docs.google.com/document/d/1fTcGLFzXCYETR0NB_vDz4-k-b4DwkGZNo_J7brsNi_0/edit"
+},
+            {
+        id: "technical-product-1",
+        title: "Url Shortner",
+        subtitle: "Technical",
         summary:
-          "A concept for capturing feedback, tagging themes, and converting insights into roadmap candidates.",
-        tags: ["Product Sense", "Research", "Roadmap"],
+          "Url shortner to shorten long urls with features like custom alias, analytics etc.",
+        tags: ["NextJS", "Javascript", "ReactJS","URL","Analytics"],
         details: [
-          "Designed tagging + theme clustering for faster synthesis.",
-          "Added a simple prioritization view (impact vs. effort).",
-          "Structured notes into decisions and follow-ups.",
+          "Implemented login/signup using JWT authentication.",
+          "User can track clicks based on location, browser, device etc.",
+          "QR code generation for each shortened URL.",
         ],
-        linkLabel: "See more",
-        linkHref: "https://example.com",
+        linkLabel: "Open Repository",
+        linkHref:"https://github.com/siddharthrangnani/urlshortner",
       },
+
     ],
     [],
   );
@@ -383,7 +405,7 @@ export default function Portfolio() {
 
                 <div className="mt-8 flex flex-wrap items-center gap-4">
                   <a
-                    href="https://github.com/"
+                    href="https://github.com/siddharthrangnani"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-card hover:scale-105"
@@ -393,7 +415,7 @@ export default function Portfolio() {
                     GitHub
                   </a>
                   <a
-                    href="https://linkedin.com/"
+                    href="https://www.linkedin.com/in/srangnani/"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-5 py-2.5 text-sm font-semibold shadow-sm transition hover:bg-card hover:scale-105"
@@ -403,10 +425,16 @@ export default function Portfolio() {
                     LinkedIn
                   </a>
 
-                  <Button className="rounded-full px-6 py-5 h-auto text-base" data-testid="button-download-cv">
-                    <Download className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Download/view CV
-                  </Button>
+                  <a
+                    href="https://drive.google.com/file/d/1mGgYf0p9dw6K3bpMkxbyP48bgkjwqqcd/view?usp=sharing"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Button className="rounded-full px-6 py-5 h-auto text-base" data-testid="button-download-cv">
+                      <Download className="mr-2 h-5 w-5" aria-hidden="true" />
+                      Download/view CV
+                    </Button>
+                  </a>
                 </div>
               </motion.div>
             </div>
@@ -438,7 +466,7 @@ export default function Portfolio() {
                         Crest Data
                       </p>
                       <p className="text-sm font-medium text-primary" data-testid="text-role-crest">
-                        Project Experience
+                        Software Developer
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-date-crest">
@@ -456,10 +484,10 @@ export default function Portfolio() {
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-lg font-bold" data-testid="text-company-cactus">
-                        Cactus Communications
+                        Cactus Labs
                       </p>
                       <p className="text-sm font-medium text-primary" data-testid="text-role-cactus">
-                        Product Intern
+                        Software Developer Intern
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-muted-foreground bg-muted/50 px-3 py-1 rounded-full" data-testid="text-date-cactus">
@@ -628,9 +656,9 @@ export default function Portfolio() {
               data-testid="list-certifications"
             >
               {[
-                { title: "Product Management Professional (PMP)", issuer: "Institute of Product", link: "https://example.com" },
-                { title: "Advanced Google Analytics", issuer: "Google", link: "https://example.com" },
-                { title: "Certified Product Manager", issuer: "AIPMM", link: "https://example.com" },
+                { title: "Product Management", issuer: "Udemy", link: "" },
+                { title: "Full Stack Web Development", issuer: "Udemy", link: "https://example.com" },
+                { title: "HackNuthon winner for chatbot", issuer: "Nirma University", link: "https://example.com" },
               ].map((cert, i) => (
                 <motion.div key={i} variants={fadeIn}>
                   <a href={cert.link} target="_blank" rel="noreferrer" className="block group">
@@ -742,7 +770,7 @@ export default function Portfolio() {
                           Email
                         </p>
                         <p className="text-base font-semibold" data-testid="text-contact-email-value">
-                          your.email@example.com
+                          shrangnani@gmail.com
                         </p>
                       </div>
                     </div>
@@ -753,10 +781,10 @@ export default function Portfolio() {
                       </span>
                       <div>
                         <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground" data-testid="text-contact-social-label">
-                          Social
+                          Mobile
                         </p>
                         <p className="text-base font-semibold" data-testid="text-contact-social-value">
-                          GitHub • LinkedIn
+                          +91 7698938566
                         </p>
                       </div>
                     </div>
@@ -880,23 +908,6 @@ export default function Portfolio() {
         </section>
       </main>
 
-      <footer className="border-t bg-background/60 py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border bg-card/70 shadow-sm">
-                <span className="font-serif text-base" aria-hidden="true">
-                  S
-                </span>
-              </span>
-              <span className="text-sm font-bold tracking-tight">Siddharth Rangnani</span>
-            </div>
-            <p className="text-sm text-muted-foreground" data-testid="text-footer">
-              © {new Date().getFullYear()} Siddharth Rangnani. Built with React & Framer Motion.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
