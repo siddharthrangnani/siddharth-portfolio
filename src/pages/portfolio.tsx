@@ -294,7 +294,21 @@ export default function Portfolio() {
         linkLabel: "Open Repository",
         linkHref:"https://github.com/siddharthrangnani/urlshortner",
       },
-
+            {
+        id: "technical-product-1",
+        title: "AI Resume Analyzer",
+        subtitle: "Technical",
+        summary:
+          "Ai resume analyzer. Upload your resume and get insights on how to improve it for better chances of getting shortlisted.",
+        tags: [ "Typescript", "ReactJS","Puter"],
+        details: [
+          "Implemented login/signup using Puter.",
+          "Users can upload their resume and JD and get insights on how to improve their resume.",
+          "Analyzed resume can be saved for future reference.",
+        ],
+        linkLabel: "Open Website",
+        linkHref:"https://ai-resume-analyzer-three-beta.vercel.app/",
+      }
     ],
     [],
   );
@@ -656,9 +670,9 @@ export default function Portfolio() {
               data-testid="list-certifications"
             >
               {[
-                { title: "Product Management", issuer: "Udemy", link: "" },
-                { title: "Full Stack Web Development", issuer: "Udemy", link: "https://example.com" },
-                { title: "HackNuthon winner for chatbot", issuer: "Nirma University", link: "https://example.com" },
+                { title: "Product Management", issuer: "Udemy", link: "https://www.udemy.com/certificate/UC-ca8597dc-a90d-45b0-8739-f1efede334e6/" },
+                { title: "Product Analytics", issuer: "Product School", link: "https://productschool.teachable.com/courses/1373833/certificate?utm_source=student_mailer&utm_medium=email&utm_campaign=issued_certificate_notification" },
+                { title: "Full Stack Web Development", issuer: "Udemy", link: "https://www.udemy.com/certificate/UC-58c66cc6-e4c9-426b-9c9f-32577f06e772/" },
               ].map((cert, i) => (
                 <motion.div key={i} variants={fadeIn}>
                   <a href={cert.link} target="_blank" rel="noreferrer" className="block group">
