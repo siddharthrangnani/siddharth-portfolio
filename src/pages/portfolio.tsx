@@ -311,18 +311,18 @@ export default function Portfolio() {
       },
       {
         id: "technical-product-1",
-        title: "AI Resume Analyzer",
-        subtitle: "Technical",
+        title: "Blinkit teardown",
+        subtitle: "Product management",
         summary:
           "Ai resume analyzer. Upload your resume and get insights on how to improve it for better chances of getting shortlisted.",
-        tags: [ "Typescript", "ReactJS","Puter"],
+        tags: [ "teardown", "PM","feature"],
         details: [
-          "Implemented login/signup using Puter.",
-          "Users can upload their resume and JD and get insights on how to improve their resume.",
-          "Analyzed resume can be saved for future reference.",
+          "About blinkit",
+          "Blinkit business study and key metrics",
+          "New feature suggestions",
         ],
         linkLabel: "Open Website",
-        linkHref:"https://ai-resume-analyzer-three-beta.vercel.app/",
+        linkHref:"https://drive.google.com/file/d/1EpvIzJvG4G3dtJSlzOg6xU_3GQX5wOoC/view?usp=sharing",
       }
     ],
     [],
