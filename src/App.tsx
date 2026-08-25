@@ -18,6 +18,7 @@ function Router() {
 
 function App() {
   return (
+    <>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
@@ -25,6 +26,7 @@ function App() {
       </TooltipProvider>
     </QueryClientProvider>
     <Analytics />
+    </>
   );
 }
 
