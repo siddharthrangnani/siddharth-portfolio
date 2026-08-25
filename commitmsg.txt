@@ -1,5 +1,0 @@
-fix: use Vercel Analytics react import in App.tsx
-
-Replaced @vercel/analytics/next with @vercel/analytics/react to avoid Next.js-only import causing build error.
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
