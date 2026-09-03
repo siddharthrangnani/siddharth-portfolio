@@ -29,10 +29,33 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mjyvrjdl";
+
 const contactFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be under 100 characters"),
+  email: z
+    .string()
+    .trim()
+    .email("Invalid email address")
+    .max(254, "Email is too long"),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(2000, "Message must be under 2000 characters"),
+  website: z.string().optional().default(""),
+}).superRefine((data, ctx) => {
+  if (data.website && data.website.trim().length > 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["website"],
+      message: "Potential spam detected",
+    });
+  }
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -208,17 +231,60 @@ export default function Portfolio() {
       name: "",
       email: "",
       message: "",
+      website: "",
     },
   });
 
-  function onSubmit(values: ContactFormValues) {
-    setIsSubmitted(true);
-    toast({
-      title: "Success!",
-      description: "Message sent successfully",
-    });
-    form.reset();
-    setTimeout(() => setIsSubmitted(false), 5000);
+  async function onSubmit(values: ContactFormValues) {
+    const sanitizedValues = {
+      name: values.name.trim().replace(/[<>]/g, ""),
+      email: values.email.trim().toLowerCase(),
+      message: values.message.trim().replace(/<[^>]*>/g, ""),
+      website: values.website?.trim() ?? "",
+    };
+
+    if (sanitizedValues.website.length > 0) {
+      toast({
+        title: "Submission blocked",
+        description: "Your message looks suspicious and was not sent.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("name", sanitizedValues.name);
+      formData.append("email", sanitizedValues.email);
+      formData.append("message", sanitizedValues.message);
+
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Unable to send message right now.");
+      }
+
+      setIsSubmitted(true);
+      form.reset();
+      toast({
+        title: "Message sent successfully",
+        description: "Thank you for reaching out. I’ll get back to you shortly!",
+      });
+    } catch (error) {
+      console.error("Contact form submission error:", error);
+      toast({
+        title: "Message not sent",
+        description: "Something went wrong while sending your message. Please try again or email me directly.",
+        variant: "destructive",
+      });
+    }
   }
 
   useEffect(() => {
@@ -865,6 +931,25 @@ export default function Portfolio() {
                         >
                           <FormField
                             control={form.control}
+                            name="website"
+                            render={({ field }) => (
+                              <FormItem className="hidden" aria-hidden="true">
+                                <FormControl>
+                                  <Input
+                                    type="text"
+                                    tabIndex={-1}
+                                    autoComplete="off"
+                                    className="sr-only"
+                                    data-testid="input-website"
+                                    {...field}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
                             name="name"
                             render={({ field }) => (
                               <FormItem>
@@ -872,6 +957,9 @@ export default function Portfolio() {
                                 <FormControl>
                                   <Input
                                     placeholder="Your name"
+                                    autoComplete="name"
+                                    maxLength={100}
+                                    required
                                     className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
                                     data-testid="input-name"
                                     {...field}
@@ -892,6 +980,9 @@ export default function Portfolio() {
                                   <Input
                                     type="email"
                                     placeholder="your@email.com"
+                                    autoComplete="email"
+                                    maxLength={254}
+                                    required
                                     className="rounded-2xl h-12 border-white/10 bg-muted/30 focus:bg-muted/50"
                                     data-testid="input-email"
                                     {...field}
@@ -911,6 +1002,9 @@ export default function Portfolio() {
                                 <FormControl>
                                   <Textarea
                                     placeholder="Write your message..."
+                                    autoComplete="off"
+                                    maxLength={2000}
+                                    required
                                     className="min-h-[160px] rounded-2xl border-white/10 bg-muted/30 focus:bg-muted/50 resize-none"
                                     data-testid="input-message"
                                     {...field}
